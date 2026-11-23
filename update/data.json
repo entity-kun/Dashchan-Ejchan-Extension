@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "repository": "Dashchan Ejchan Extension"
+  },
+  "ejchan": [
+    {
+      "title": "Release",
+      "name": "1.2.0",
+      "code": 1,
+      "minVersion": 1,
+      "maxVersion": 1,
+      "minSdk": 16,
+      "length": 28209,
+      "source": "//github.com/entity-kun/Dashchan-Ejchan-Extension/releases/download/v1.2.0/DashchanEjchan-1.2.0.apk",
+      "fingerprint": "3F:90:6A:6B:D7:C2:89:BA:56:B9:56:A4:22:18:8B:44:E3:67:63:81:51:EC:72:4A:EF:90:F4:8E:A5:2F:BE:9F"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="captcha_title">Ejchan captcha</string>
+	<string name="epass_hint">E-pass code</string>
+	<string name="boards_title">Boards</string>
+	<string name="epass_required">Posting without an E-pass is currently disabled. Enter an E-pass code in Ejchan settings.</string>
+</resources>

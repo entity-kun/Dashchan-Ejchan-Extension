@@ -1,0 +1,8 @@
+apply plugin: 'chan-extension'
+
+chan {
+	versionName System.getenv('RELEASE_VERSION') ?: '1.2.0'
+	apiVersion 1
+	updateUri '//raw.githubusercontent.com/entity-kun/Dashchan-Ejchan-Extension/main/update/data.json'
+	hosts 'ejchan.site', 'ejchan.net'
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="captcha_title">Капча Ежчана</string>
+	<string name="epass_hint">Код Е-Пропуска</string>
+	<string name="boards_title">Доски</string>
+	<string name="epass_required">Постинг без Е-Пропуска сейчас отключён. Укажите код Е-Пропуска в настройках Ежчана.</string>
+</resources>
