@@ -98,6 +98,7 @@ class EjchanExtensionContractTest(unittest.TestCase):
         self.assertIn('"https".equalsIgnoreCase(uri.getScheme())', resolver)
         self.assertIn("uri.getPort() == -1 || uri.getPort() == 443", resolver)
         self.assertIn('"/".equals(StringUtils.emptyIfNull(uri.getPath()))', resolver)
+        self.assertNotIn("session.isResolveRequest()", resolver)
         self.assertIn("EjchanAnubisSupport.isRussiaOnly(responseText)", resolver)
         self.assertIn("session.resolveWebView(new WebViewClient())", resolver)
         self.assertIn("setRetransmitOnSuccess(true)", resolver)

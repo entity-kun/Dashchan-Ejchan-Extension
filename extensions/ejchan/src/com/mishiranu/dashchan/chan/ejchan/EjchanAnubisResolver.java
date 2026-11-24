@@ -109,8 +109,7 @@ public class EjchanAnubisResolver extends FirewallResolver {
 	@Override
 	public CheckResponseResult checkResponse(Session session, HttpResponse response) throws HttpException {
 		Uri uri = session.getUri();
-		if (!isCanonicalSiteUri(uri) || !"/".equals(StringUtils.emptyIfNull(uri.getPath()))
-				|| !session.isResolveRequest()) return null;
+		if (!isCanonicalSiteUri(uri) || !"/".equals(StringUtils.emptyIfNull(uri.getPath()))) return null;
 		String contentType = getHeader(response, "Content-Type");
 		if (response.getResponseCode() == 403 || contentType == null
 				|| contentType.toLowerCase(Locale.US).contains("html")) {
