@@ -4,5 +4,4 @@
 	<string name="epass_hint">Код Е-Пропуска</string>
 	<string name="boards_title">Доски</string>
 	<string name="epass_required">Постинг без Е-Пропуска сейчас отключён. Укажите код Е-Пропуска в настройках Ежчана.</string>
-	<string name="site_russia_only">ejchan.site доступен только с российского IP-адреса. Выберите ejchan.net или подключитесь через российский адрес.</string>
 </resources>

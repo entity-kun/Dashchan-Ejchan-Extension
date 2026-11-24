@@ -40,7 +40,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class EjchanChanPerformer extends ChanPerformer {
-	private static final String SITE_HOST = "ejchan.site";
 	private static final String COOKIE_CSRF = "ejnext_csrf";
 	private static final String COOKIE_EPASS = "ejnext_epass";
 	private static final String COOKIE_EPASS_STORAGE = "ejchan_epass_cookie";
@@ -66,52 +65,7 @@ public class EjchanChanPerformer extends ChanPerformer {
 		}
 	}
 
-	public EjchanChanPerformer() {
-		try {
-			registerFirewallResolver(new EjchanAnubisResolver());
-		} catch (LinkageError e) {
-			e.printStackTrace();
-		}
-	}
-
-	private static String readSiteError(HttpResponse response) throws HttpException {
-		final int maxBytes = 64 * 1024;
-		try (InputStream input = response.open(); ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-			byte[] buffer = new byte[4096];
-			int total = 0;
-			int count;
-			while ((count = input.read(buffer)) >= 0) {
-				int remaining = maxBytes - total;
-				if (remaining <= 0) break;
-				int write = Math.min(count, remaining);
-				output.write(buffer, 0, write);
-				total += write;
-				if (write < count) break;
-			}
-			return new String(output.toByteArray(), StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			throw response.fail(e);
-		}
-	}
-
-	private void ensureSiteAccess(Uri uri, HttpRequest.Preset preset) throws HttpException {
-		if (uri == null || !SITE_HOST.equalsIgnoreCase(uri.getHost())) return;
-		Uri root = EjchanChanLocator.get(this).buildPathWithHost(SITE_HOST).buildUpon().path("/").build();
-		HttpResponse response = new HttpRequest(root, preset).setTimeouts(-1, API_READ_TIMEOUT)
-				.addHeader("Accept", "text/html,application/xhtml+xml")
-				.addHeader("Accept-Encoding", "identity").setSuccessOnly(false).perform();
-		if (response.getResponseCode() >= 400) {
-			String error = readSiteError(response);
-			if (EjchanAnubisSupport.isRussiaOnly(error)) {
-				throw new HttpException(0, EjchanChanConfiguration.get(this).getResources()
-						.getString(R.string.site_russia_only));
-			}
-			response.checkResponseCode();
-		}
-	}
-
-	private HttpRequest createJsonRequest(Uri uri, HttpRequest.Preset preset) throws HttpException {
-		ensureSiteAccess(uri, preset);
+	private HttpRequest createJsonRequest(Uri uri, HttpRequest.Preset preset) {
 		return new HttpRequest(uri, preset).setTimeouts(-1, API_READ_TIMEOUT)
 				.addHeader("Accept", "application/json").addHeader("Accept-Encoding", "identity");
 	}

@@ -1,7 +1,4 @@
 from pathlib import Path
-import subprocess
-import tempfile
-import textwrap
 import unittest
 
 EXT = Path(__file__).resolve().parents[1]
@@ -85,70 +82,6 @@ class EjchanExtensionContractTest(unittest.TestCase):
         self.assertIn('lower.contains("disabled")', performer)
         self.assertIn("R.string.epass_required", performer)
         self.assertIn('name="epass_required"', strings)
-
-    def test_ejchan_site_uses_anubis_root_webview_and_refreshes_cookies(self):
-        performer = (SRC / "EjchanChanPerformer.java").read_text()
-        resolver = (SRC / "EjchanAnubisResolver.java").read_text()
-        strings = (EXT / "res" / "values-ru" / "strings.xml").read_text()
-        self.assertIn("registerFirewallResolver(new EjchanAnubisResolver())", performer)
-        self.assertIn("ensureSiteAccess(uri, preset)", performer)
-        self.assertIn('buildPathWithHost(SITE_HOST)', performer)
-        self.assertIn('.path("/").build()', performer)
-        self.assertIn('SITE_HOST.equalsIgnoreCase(uri.getHost())', resolver)
-        self.assertIn('"https".equalsIgnoreCase(uri.getScheme())', resolver)
-        self.assertIn("uri.getPort() == -1 || uri.getPort() == 443", resolver)
-        self.assertIn('"/".equals(StringUtils.emptyIfNull(uri.getPath()))', resolver)
-        self.assertNotIn("session.isResolveRequest()", resolver)
-        self.assertIn("EjchanAnubisSupport.isRussiaOnly(responseText)", resolver)
-        self.assertIn("session.resolveWebView(new WebViewClient())", resolver)
-        self.assertIn("setRetransmitOnSuccess(true)", resolver)
-        self.assertIn('path.equals("/")', resolver)
-        self.assertIn('name="site_russia_only"', strings)
-
-    def test_anubis_cookie_and_challenge_classifier_behavior(self):
-        helper = SRC / "EjchanAnubisSupport.java"
-        self.assertTrue(helper.is_file())
-        harness = textwrap.dedent("""
-            package com.mishiranu.dashchan.chan.ejchan;
-            import java.util.LinkedHashMap;
-            import java.util.Map;
-
-            public class AnubisHarness {
-                private static void require(boolean value, String message) {
-                    if (!value) throw new AssertionError(message);
-                }
-
-                public static void main(String[] args) {
-                    Map<String, String> cookies = new LinkedHashMap<>();
-                    cookies.put("unrelated", "secret");
-                    cookies.put("techaro.lol-anubis-cookie-verification", "pending");
-                    cookies.put("evil-anubis-auth", "attacker");
-                    require(EjchanAnubisSupport.collectCookies(cookies) == null,
-                            "unrecognized Anubis-like cookie must not authorize");
-                    cookies.put("techaro.lol-anubis-auth-a1b2c3d4", "proof");
-                    String result = EjchanAnubisSupport.collectCookies(cookies);
-                    require(result.contains("techaro.lol-anubis-auth-a1b2c3d4=proof"), "auth cookie missing");
-                    require(result.contains("techaro.lol-anubis-cookie-verification=pending"),
-                            "verification cookie missing");
-                    require(!result.contains("unrelated"), "unrelated cookie leaked");
-                    require(EjchanAnubisSupport.isChallenge("text/html",
-                            "<script src='/.within.website/x/x.js'></script>"), "challenge not detected");
-                    require(!EjchanAnubisSupport.isChallenge("text/plain",
-                            "Этот домен только для российских адресов"), "geo block misclassified");
-                    require(EjchanAnubisSupport.isRussiaOnly("Этот домен только для российских адресов."),
-                            "Russia-only response not detected");
-                }
-            }
-        """)
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            package = root / "com" / "mishiranu" / "dashchan" / "chan" / "ejchan"
-            package.mkdir(parents=True)
-            harness_file = package / "AnubisHarness.java"
-            harness_file.write_text(harness)
-            subprocess.run(["/opt/jdk-11/bin/javac", "-d", str(root), str(helper), str(harness_file)], check=True)
-            subprocess.run(["/opt/jdk-11/bin/java", "-cp", str(root),
-                            "com.mishiranu.dashchan.chan.ejchan.AnubisHarness"], check=True)
 
     def test_official_ejchan_logo_is_packaged_as_outline_vector(self):
         icon = EXT / "res" / "drawable-v21" / "ic_custom_ejchan.xml"

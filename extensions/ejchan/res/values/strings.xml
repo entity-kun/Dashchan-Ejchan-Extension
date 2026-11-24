@@ -4,5 +4,4 @@
 	<string name="epass_hint">E-pass code</string>
 	<string name="boards_title">Boards</string>
 	<string name="epass_required">Posting without an E-pass is currently disabled. Enter an E-pass code in Ejchan settings.</string>
-	<string name="site_russia_only">ejchan.site is available only from a Russian IP address. Select ejchan.net or use a Russian connection.</string>
 </resources>
